@@ -1,5 +1,5 @@
 """
-Pyhton Scripting
+Python Scripting
 """
 
 import os
