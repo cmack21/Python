@@ -1,0 +1,38 @@
+"""
+Boto3_Project
+"""
+import boto3
+
+# Creating an EC2 client
+ec2_client = boto3.client('ec2')
+
+# Retrieving information about all instances
+response = ec2_client.describe_instances()
+
+# Retrieving information about running instances only
+response = ec2_client.describe_instances(
+    Filters=[
+        {'Name': 'instance-state-name',
+         'Values': ['running']}
+    ]
+)
+
+# Initializing an empty list to store instance IDs
+instance_ids = []
+
+# Extracting instance IDs from the response
+for reservation in response['Reservations']:
+    for instance in reservation['Instances']:
+        # Extracting instance ID
+        instance_id = instance['InstanceId']
+        # Appending instance ID to the list
+        instance_ids.append(instance_id)
+
+# Checking if there are running instances to stop
+if instance_ids:
+    # Stopping the instances
+    stop_response = ec2_client.stop_instances(InstanceIds=instance_ids)
+    print("Stopping instances:", instance_ids)
+    print("Stop response:", stop_response)
+else:
+    print("No running instances to stop.")
